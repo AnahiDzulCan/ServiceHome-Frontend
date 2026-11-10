@@ -1,0 +1,54 @@
+.rol-opciones {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.rol-opcion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 12px 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  background: #fff;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.rol-opcion:hover,
+.rol-opcion:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 24px rgba(47, 107, 255, 0.15);
+  transform: translateY(-3px);
+  outline: none;
+}
+
+.rol-opcion-icono {
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 40px;
+}
+
+.rol-opcion-texto {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+/* En pantallas muy pequeñas, una opción debajo de la otra */
+@media (max-width: 420px) {
+  .rol-opciones {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,50 @@
+.request-modal .ant-modal-content {
+  padding: 28px 24px 24px;
+  border-radius: 28px;
+  background: #f6f8ff;
+}
+
+.request-modal .ant-modal-header {
+  margin-bottom: 20px;
+  padding-right: 32px; /* deja espacio para la X */
+  background: transparent;
+}
+
+.request-modal-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.request-modal-subtitle {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-muted);
+}
+
+.request-form .ant-input {
+  border-color: var(--color-border);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.request-form textarea.ant-input {
+  padding: 12px 16px;
+  resize: none;
+}
+
+.request-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* En pantallas muy angostas, fecha y hora una debajo de la otra */
+@media (max-width: 380px) {
+  .request-form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

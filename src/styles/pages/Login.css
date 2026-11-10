@@ -1,0 +1,23 @@
+
+/* "¿Olvidaste tu contraseña?" a la derecha del label */
+.login-password-label {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-password-label a {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.login-footer {
+  margin: 24px 0 0;
+  font-size: 15px;
+  color: var(--color-muted);
+}
+
+.login-footer a {
+  font-weight: 500;
+}

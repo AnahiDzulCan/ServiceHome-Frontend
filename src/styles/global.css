@@ -1,0 +1,15 @@
+@import './variables.css';
+@import './animations.css';
+@import './pages/Login.css';
+@import './pages/role-selection.css';
+@import './components/navigation.css';
+@import './components/announcements.css';
+@import './components/request-modal.css';
+@import './pages/client-home.css';
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}

@@ -1,0 +1,193 @@
+/* ===== Base (móvil): barra inferior ===== */
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-main {
+  padding: 20px 16px 96px; /* espacio para que la barra no tape el contenido */
+}
+
+.sidebar {
+  display: none;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-border);
+  background: #fff;
+}
+
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+.bottom-nav-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.bottom-nav-label {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.bottom-nav-item.is-active {
+  color: var(--color-primary);
+}
+
+/* ===== Escritorio: menú lateral ===== */
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+
+  .app-main {
+    margin-left: 260px;
+    padding: 32px;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 14px;
+    border-right: 1px solid var(--color-border);
+    background: #fbfcff;
+  }
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px 28px;
+}
+
+.sidebar-brand-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 20px;
+}
+
+.sidebar-brand-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  color: #5f6578;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.sidebar-item-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.sidebar-item:hover {
+  background: #f1f4fc;
+}
+
+.sidebar-item.is-active {
+  background: #e8efff;
+  color: var(--color-primary);
+}
+
+/* ===== Tarjeta del usuario ===== */
+.user-card {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(40, 70, 140, 0.06);
+}
+
+.user-card-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8efff;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.user-card-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-card-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.user-card-detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.user-card-star {
+  color: #f5a623;
+}

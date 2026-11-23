@@ -2272,6 +2272,34 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
 
+-- Crea el perfil automáticamente al registrarse un usuario
+create or replace trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- Bucket privado para documentos de técnicos (máx. 5 MB, PDF o imagen)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('documentos-tecnicos', 'documentos-tecnicos', false, 5242880,
+        array['application/pdf', 'image/jpeg', 'image/png', 'image/webp'])
+on conflict (id) do nothing;
+
+-- El técnico sube archivos solo a su carpeta: <uid>/<archivo>
+create policy documentos_tecnicos_insert on storage.objects
+  for insert to authenticated
+  with check (
+    bucket_id = 'documentos-tecnicos'
+    and (storage.foldername(name))[1] = (select auth.uid())::text
+    and (select public.my_role()) = 'tecnico'
+  );
+
+-- Lee sus propios archivos; el admin lee todos
+create policy documentos_tecnicos_select on storage.objects
+  for select to authenticated
+  using (
+    bucket_id = 'documentos-tecnicos'
+    and ((storage.foldername(name))[1] = (select auth.uid())::text
+         or (select public.is_admin()))
+  );
 
 
 

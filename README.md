@@ -2,7 +2,7 @@
 
 Cliente web de **ServiceHome**, una plataforma que conecta a clientes con técnicos para servicios del hogar (electricidad, plomería, etc.). Los clientes exploran categorías de servicio y solicitan una visita; los técnicos reciben y gestionan esas solicitudes; los administradores supervisan usuarios, técnicos, facturas y reportes.
 
-Este repositorio contiene solo el frontend. El backend es [Supabase](https://supabase.com): el cliente ya está configurado, pero las pantallas todavía usan **datos de prueba (mocks)** mientras se van conectando.
+Este repositorio contiene solo el frontend. El backend es [Supabase](https://supabase.com) (Auth, Postgres con RLS, funciones RPC y Storage): no hay servidor propio y las reglas de negocio viven en la base de datos. El esquema está versionado en [`supabase/migrations/`](supabase/migrations/). El cliente ya está configurado, pero las pantallas todavía usan **datos de prueba (mocks)** mientras se van conectando.
 
 ## Tecnologías
 
@@ -17,7 +17,7 @@ Este repositorio contiene solo el frontend. El backend es [Supabase](https://sup
 
 ## Primeros pasos
 
-Requisitos: Node.js 20+, pnpm y acceso a un proyecto de Supabase.
+Requisitos: Node.js 20+, pnpm y acceso a un proyecto de Supabase. El CLI de Supabase viene como dependencia de desarrollo, así que no hace falta instalarlo aparte: se usa con `pnpm supabase ...`.
 
 ```bash
 pnpm install
@@ -53,6 +53,42 @@ Después abre <http://localhost:5173/login>. Aún no existe una ruta en `/`, as�
 | `pnpm preview` | Sirve localmente la versión compilada                              |
 | `pnpm lint`    | Ejecuta ESLint sobre el proyecto                                   |
 
+## Base de datos (Supabase)
+
+El esquema de la base vive en [`supabase/`](supabase/):
+
+| Ruta                    | Contenido                                                                 |
+| ----------------------- | ------------------------------------------------------------------------- |
+| `supabase/migrations/`  | Migraciones que se aplican a la base (la primera es `esquema_base`)        |
+| `supabase/seed.sql`     | Datos iniciales: zonas y categorías de servicio                            |
+| `supabase/historial/`   | Migraciones antiguas, **solo como referencia**; no se aplican              |
+| `src/types/supabase.ts` | Tipos de TypeScript generados desde el esquema. **No se editan a mano**    |
+
+Las reglas de negocio (permisos por rol, ciclo de vida de las solicitudes, verificación de técnicos, funciones RPC) están documentadas en [`CLAUDE.md`](CLAUDE.md). Léelo antes de escribir código que use la base.
+
+### Cambiar el esquema
+
+Los cambios en la base **nunca** se hacen desde el dashboard ni desde el frontend. Siempre se hacen con una migración revisada:
+
+1. Si es la primera vez, inicia sesión y vincula el proyecto:
+   ```bash
+   pnpm supabase login
+   pnpm supabase link --project-ref xmzdqxgfvqxuuxqqhuwa
+   ```
+2. Crea la migración: `pnpm supabase migration new <nombre>`
+3. Escribe el SQL en el archivo nuevo de `supabase/migrations/` y pide que lo revisen.
+4. Aplícala a la base remota: `pnpm supabase db push`
+5. Regenera los tipos:
+   ```bash
+   pnpm supabase gen types typescript --project-id xmzdqxgfvqxuuxqqhuwa > src/types/supabase.ts
+   ```
+
+> ⚠️ **Nunca** ejecutes `pnpm supabase db reset --linked` (ni con `--remote`): borra la base de datos en la nube.
+
+### Claude Code (MCP)
+
+El repositorio incluye [`.mcp.json`](.mcp.json) con un servidor MCP de Supabase limitado a este proyecto y en **solo lectura**, para que Claude Code pueda consultar el esquema, las políticas y los logs. `CLAUDE.md` contiene el contexto y las reglas que debe seguir.
+
 ## Rutas
 
 Definidas en [`src/routes/AppRouter.tsx`](src/routes/AppRouter.tsx).
@@ -86,8 +122,14 @@ src/
 │   └── client/      Páginas del cliente
 ├── routes/          Enrutador de la app
 ├── styles/          Estilos globales, variables de diseño, CSS por componente y por página
-├── types/           Tipos de TypeScript compartidos (usuario, catálogo, navegación…)
+├── types/           Tipos de TypeScript compartidos (usuario, catálogo, navegación…) y supabase.ts (generado)
 └── utils/           Utilidades (formato, íconos de categorías, configuración de navegación)
+
+supabase/
+├── migrations/      Migraciones del esquema
+├── historial/       Migraciones antiguas (solo referencia)
+├── seed.sql         Datos iniciales
+└── config.toml      Configuración del CLI de Supabase
 ```
 
 ## Convenciones
@@ -99,9 +141,10 @@ src/
 ## Pendientes
 
 - [x] Configurar el cliente de Supabase y las variables de entorno
+- [x] Esquema de base versionado con migraciones, seed y tipos generados
 - [ ] Conectar las pantallas con Supabase (autenticación, categorías, solicitudes)
+- [ ] Registro de cliente y técnico, y recuperación de contraseña (`/recuperar`)
 - [ ] Manejo real de sesión y protección de rutas por rol
-- [ ] Páginas del cliente: mis pedidos, perfil
-- [ ] Panel del técnico
-- [ ] Panel de administración (usuarios, técnicos, facturas, reportes)
-- [ ] Recuperación de contraseña (`/recuperar`)
+- [ ] Cliente: buscar técnico, mis solicitudes (detalle, historial, factura, calificar), notificaciones, perfil
+- [ ] Técnico: verificación (subir documentos y enviar a revisión), bandeja de solicitudes, cerrar servicio con factura, reseñas, perfil
+- [ ] Administración: dashboard y reportes, verificación de técnicos, usuarios, facturas excedidas, categorías y zonas

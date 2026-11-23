@@ -15,15 +15,15 @@ Marketplace de servicios para el hogar. Los clientes buscan técnicos verificado
 - Variables en `.env.local` (no se suben al repo):
   ```
   VITE_SUPABASE_URL=https://xmzdqxgfvqxuuxqqhuwa.supabase.co
-  VITE_SUPABASE_ANON_KEY=<publishable/anon key del dashboard>
+  VITE_SUPABASE_PUBLISHABLE_KEY=<publishable/anon key del dashboard>
   ```
 - Cliente único en `src/lib/supabase.ts`:
   ```ts
   import { createClient } from '@supabase/supabase-js'
-  import type { Database } from '@/types/supabase'
+  import type { Database } from '../types/supabase' // no hay alias `@/`: usar rutas relativas
   export const supabase = createClient<Database>(
     import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY,
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
   )
   ```
 - **Nunca** usar la `service_role` key en el frontend.
